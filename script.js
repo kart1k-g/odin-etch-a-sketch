@@ -57,7 +57,8 @@ function createPrompts(){
     const toggleProgressiveModeBtn=document.createElement("button");
     toggleProgressiveModeBtn.classList.add("btn");
     toggleProgressiveModeBtn.id="toggle-progressive-btn";
-    toggleProgressiveModeBtn.textContent=progressiveDark?"Progressive Darkening":"Consistent";
+    toggleProgressiveModeBtn.textContent=progressiveDark?"Progressive Darkening":"Consistent Color";
+    toggleProgressiveModeBtn.addEventListener("click", toggleProgressiveModeClicked);
 
     const colorPicker=document.createElement("input");
     colorPicker.setAttribute("type", "color");
@@ -77,6 +78,15 @@ function createPrompts(){
 
 function handleHover(event){
     setDivColor(event);
+    updateOpacity(event);
+}
+
+function updateOpacity(event){
+    const divOpacity=event.target.style.opacity;
+    if(divOpacity==="")
+        event.target.style.opacity=0.9;
+    else if(Number(divOpacity)>0)
+        event.target.style.opacity=Number(divOpacity)-0.1;
 }
 
 function setDivColor(event){
@@ -150,6 +160,15 @@ function toggleColorModeClicked(){
     }else{
         console.log("Error toggling color mode");
     }
+}
+
+function toggleProgressiveModeClicked(event){
+    if(progressiveDark){
+        event.target.textContent="Consistent Color";
+    }else{
+        event.target.textContent="Progressive Darkening";
+    }
+    progressiveDark=!progressiveDark;
 }
 
 function reset(squareCount=16){

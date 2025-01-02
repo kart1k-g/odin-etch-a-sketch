@@ -25,10 +25,14 @@
 
 #grid-boundary{
     border: 3px solid black;
+    background-color: black;
 }
 .row-container{
     display: flex;
 }
 .btn{
     height: 24px;
+}
+.square{
+    background-color: white;
 }
