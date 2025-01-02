@@ -30,44 +30,43 @@ function createGrid(rows, cols, sideLen){
     return gridContainer
 }
 
-function calcSideLen(squareCount, padding, gridLen){
-    return Math.floor((gridLen-padding)/squareCount)
-}
-
 function createPrompts(){
     const promptContainer=document.createElement("div");
     promptContainer.id="prompt-container";
     const promptBoundary=document.createElement("div");
     promptBoundary.id="prompt-boundary";
 
-    const resetBtn=document.createElement("button");
-    resetBtn.classList.add("btn");
-    resetBtn.id="reset-btn";
-    resetBtn.textContent="Reset";
-
+    const clearBtn=document.createElement("button");
+    clearBtn.classList.add("btn");
+    clearBtn.id="clear-btn";
+    clearBtn.textContent="Clear";
+    clearBtn.addEventListener("click", clearClicked);
+    
     const resizeBtn=document.createElement("button");
     resizeBtn.classList.add("btn");
     resizeBtn.id="resize-btn";
     resizeBtn.textContent="Resize";
+    resizeBtn.addEventListener("click", resizeGridClicked);
 
     const toggleColorModeBtn=document.createElement("button");
     toggleColorModeBtn.classList.add("btn");
     toggleColorModeBtn.id="toggle-color-btn";
     toggleColorModeBtn.textContent=colorMode;
+    toggleColorModeBtn.addEventListener("click", toggleColorModeClicked);
 
-    const toggleProgressiveModeBrn=document.createElement("button");
-    toggleProgressiveModeBrn.classList.add("btn");
-    toggleProgressiveModeBrn.id="toggle-progressive-btn";
-    toggleProgressiveModeBrn.textContent=progressiveDark?"Progressive Darkening":"Consistent";
+    const toggleProgressiveModeBtn=document.createElement("button");
+    toggleProgressiveModeBtn.classList.add("btn");
+    toggleProgressiveModeBtn.id="toggle-progressive-btn";
+    toggleProgressiveModeBtn.textContent=progressiveDark?"Progressive Darkening":"Consistent";
 
     const colorPicker=document.createElement("input");
     colorPicker.setAttribute("type", "color");
     colorPicker.id="color-picker";
 
 
-    promptBoundary.appendChild(resetBtn);
     promptBoundary.appendChild(resizeBtn);
-    promptBoundary.appendChild(toggleProgressiveModeBrn);
+    promptBoundary.appendChild(clearBtn);
+    promptBoundary.appendChild(toggleProgressiveModeBtn);
     promptBoundary.appendChild(toggleColorModeBtn);
     promptBoundary.appendChild(colorPicker);
 
@@ -78,13 +77,6 @@ function createPrompts(){
 
 function handleHover(event){
     setDivColor(event);
-}
-
-function pickColor(){
-    const red=Math.floor(Math.random()*255);
-    const green=Math.floor(Math.random()*255);
-    const blue=Math.floor(Math.random()*255);
-    return `rgb(${red},${green},${blue})`
 }
 
 function setDivColor(event){
@@ -101,7 +93,66 @@ function setDivColor(event){
     }
 }
 
-function reset(squareCount=16, delta=0.2){
+function pickColor(){
+    const red=Math.floor(Math.random()*255);
+    const green=Math.floor(Math.random()*255);
+    const blue=Math.floor(Math.random()*255);
+    return `rgb(${red},${green},${blue})`
+}
+
+function calcSideLen(squareCount, padding, gridLen){
+    return Math.floor((gridLen-padding)/squareCount)
+}
+
+function clearClicked(){
+    const btns=document.querySelectorAll(".square");
+    btns.forEach(element => {
+        element.style.backgroundColor="white";
+    });
+}
+
+function resizeGridClicked(){
+    newSquareCount=getGridSize();
+    if(newSquareCount===0)
+        return;
+
+    document.querySelector("#main-container").remove();
+    reset(newSquareCount);    
+}
+
+function getGridSize(){
+    let newSquareCount=prompt("Enter grid blocks (1-100)");
+    if(newSquareCount===null)
+        return 0;
+    newSquareCount=Number(newSquareCount);
+
+    while(newSquareCount<0 || !newSquareCount || newSquareCount>100){
+        newSquareCount=prompt("Enter a valid number(1-100) or cancel!");
+        if(newSquareCount===null)
+            return 0;
+        newSquareCount=Number(newSquareCount);
+    }
+    return newSquareCount;
+}
+
+function toggleColorModeClicked(){
+    const btn=document.querySelector("#toggle-color-btn");
+    const colorPicker=document.querySelector("#color-picker");
+
+    if(colorMode==="Monochrome"){
+        colorMode="RGB";
+        colorPicker.style.display="None";
+        btn.textContent="RGB";
+    }else if(colorMode==="RGB"){
+        colorMode="Monochrome";
+        btn.textContent="Monochrome";
+        colorPicker.style.display="inline";
+    }else{
+        console.log("Error toggling color mode");
+    }
+}
+
+function reset(squareCount=16){
     const gridLen=Math.min(window.innerWidth, window.innerHeight);  
     const padding=delta*gridLen;
     const sideLen=calcSideLen(squareCount, padding, gridLen);
@@ -111,6 +162,9 @@ function reset(squareCount=16, delta=0.2){
     
     const gridContainer=createGrid(squareCount, squareCount, sideLen);
     const promptContainer=createPrompts();
+    const prevMainContainer=document.getElementById("main-container");
+    if(prevMainContainer)
+        prevMainContainer.remove();
     mainContainer.appendChild(promptContainer);
     mainContainer.appendChild(gridContainer);
 
@@ -120,14 +174,15 @@ function reset(squareCount=16, delta=0.2){
 function initialise(){
     colorMode="Monochrome";
     progressiveDark=false;
-    monoColorValue=`rgb(${0},${0},${0})`
+    monoColorValue=`rgb(${0},${0},${0})`;
+    delta=0.2;
     reset();
 }
 
 const grid=[];
 let colorMode,
     monoColorValue,
-    progressiveDark;
+    progressiveDark,
+    delta;
 
 window.addEventListener("load",initialise);
-// console.log(screen.height); 

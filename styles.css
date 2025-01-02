@@ -29,3 +29,6 @@
 .row-container{
     display: flex;
 }
+.btn{
+    height: 24px;
+}
