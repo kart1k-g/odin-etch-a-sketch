@@ -79,7 +79,8 @@ function createPrompts(){
 
 function handleHover(event){
     setDivColor(event);
-    updateOpacity(event);
+    if(progressiveDark)
+        updateOpacity(event);
 }
 
 function updateOpacity(event){
