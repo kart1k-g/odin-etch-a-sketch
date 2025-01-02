@@ -193,7 +193,7 @@ function reset(squareCount=16){
     mainContainer.appendChild(promptContainer);
     mainContainer.appendChild(gridContainer);
 
-    document.body.appendChild(mainContainer);
+    document.querySelector("header").insertAdjacentElement("afterend",mainContainer);
 }
 
 function initialise(){
