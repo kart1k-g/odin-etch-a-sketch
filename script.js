@@ -63,6 +63,7 @@ function createPrompts(){
     const colorPicker=document.createElement("input");
     colorPicker.setAttribute("type", "color");
     colorPicker.id="color-picker";
+    colorPicker.addEventListener("input", changeMonoColor);
 
 
     promptBoundary.appendChild(resizeBtn);
@@ -169,6 +170,10 @@ function toggleProgressiveModeClicked(event){
         event.target.textContent="Progressive Darkening";
     }
     progressiveDark=!progressiveDark;
+}
+
+function changeMonoColor(event){
+    monoColorValue=event.target.value;
 }
 
 function reset(squareCount=16){
